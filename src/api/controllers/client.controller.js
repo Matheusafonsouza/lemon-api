@@ -1,51 +1,35 @@
 const httpStatus = require('http-status');
+const ClientService = require('../services/client.service');
 
 exports.validate = async (req, res, next) => {
   const {
-    tipoDeConexao,
-    classeDeConsumo,
-    modalidadeTarifaria,
-    historicoDeConsumo,
+    connectionType: connectionType,
+    classeDeConsumo: consumptionClass,
+    modalidadeTarifaria: fareModality,
+    historicoDeConsumo: consumptionHistory,
   } = req.body;
 
-  const errors = [];
+  const clientService = new ClientService();
+  const [clientData, errors] = clientService.validate({
+    connectionType,
+    consumptionClass,
+    fareModality,
+    consumptionHistory,
+  })
 
-  if (![
-    'residencial',
-    'industrial',
-    'comercial',
-  ].includes(classeDeConsumo)) {
-    errors.push('Classe de consumo não aceita');
-  }
-
-  if (!['branca', 'convencional'].includes(modalidadeTarifaria)) {
-    errors.push('Modalidade tarifária não aceita');
-  }
-
-  const validHistoryMonths = historicoDeConsumo.slice(0, 12);
-  const historySum = validHistoryMonths.reduce((a, b) => a + b, 0);
-  const average = historySum / validHistoryMonths.length;
-
-  const connectionTypeSwitch = {
-    'monofasico': 400,
-    'bifasico': 500,
-    'trifasico': 750,
-  }
-  if (average < connectionTypeSwitch[tipoDeConexao]) {
-    errors.push('Consumo muito baixo para tipo de conexão');
-  }
-
-  const co2Economy = (84 * historySum) / 1000;
+  const {
+    valid,
+    co2Economy,
+  } = clientData
 
   const responseBody = {
-    "elegivel": errors.length === 0,
+    "elegivel": valid,
   }
 
-  let responseStatus = httpStatus.OK;
-  if (errors.length === 0) {
+  let responseStatus = valid ? httpStatus.OK : httpStatus.BAD_REQUEST;
+  if (valid) {
     responseBody['economiaAnualDeCO2'] = co2Economy;
   } else {
-    responseStatus = httpStatus.BAD_REQUEST;
     responseBody['erros'] = errors;
   }
 
