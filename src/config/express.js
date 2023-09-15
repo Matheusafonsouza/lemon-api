@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
-const routes = require('../api/routes/v1');
+const routes = require('../api/routes');
 const error = require('../api/middlewares/error');
 const { logs } = require('./vars');
 
