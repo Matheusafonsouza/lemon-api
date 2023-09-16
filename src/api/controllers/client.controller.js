@@ -23,7 +23,7 @@ exports.validate = async (req, res, next) => {
   } = clientData
 
   const responseBody = {
-    "elegivel": valid,
+    elegivel: valid,
   }
 
   let responseStatus = valid ? httpStatus.OK : httpStatus.BAD_REQUEST;
