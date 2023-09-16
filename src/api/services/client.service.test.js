@@ -7,14 +7,14 @@ const {
 
 describe('ClientService', () => {
   let clientService;
-  
+
   beforeAll(() => {
     clientService = new ClientService();
-  })
+  });
 
   afterEach(() => {
     jest.clearAllMocks();
-  })
+  });
 
   it.each([
     {
@@ -39,12 +39,12 @@ describe('ClientService', () => {
     },
   ])('Should validate $consumptionClass consumption class', ({
     consumptionClass,
-    expected 
+    expected,
   }) => {
     const result = clientService.validateConsumptionClass(consumptionClass);
     expect(result).toBe(expected);
   });
-  
+
   it.each([
     {
       fareModality: fareModalitiesEnum.branco,
@@ -64,11 +64,11 @@ describe('ClientService', () => {
     },
   ])('Should validate $fareModality fare modality', ({
     fareModality,
-    expected 
+    expected,
   }) => {
     const result = clientService.validateFareModality(fareModality);
     expect(result).toBe(expected);
-  })
+  });
 
   it.each([
     {
@@ -104,14 +104,14 @@ describe('ClientService', () => {
   ])('Should validate $fareModality consumption history', ({
     consumptionHistoryAverage,
     connectionType,
-    expected 
+    expected,
   }) => {
     const result = clientService.validateConsumptionHistory(
       consumptionHistoryAverage,
-      connectionType
+      connectionType,
     );
     expect(result).toBe(expected);
-  })
+  });
 
   it('Should get consumption history data', () => {
     const consumptionHistory = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
@@ -134,7 +134,7 @@ describe('ClientService', () => {
       sum: 5500,
       average: 550,
       co2Economy: 462,
-    })
+    });
     validateConsumptionClassSpy.mockReturnValueOnce(null);
     validateFareModalitySpy.mockReturnValueOnce(null);
     validateConsumptionHistorySpy.mockReturnValueOnce(null);
@@ -145,7 +145,7 @@ describe('ClientService', () => {
       connectionType: connectionTypesEnum.monofasico,
       consumptionClass: consumptionClassesEnum.residencial,
       fareModality: fareModalitiesEnum.branca,
-      consumptionHistory: consumptionHistory,
+      consumptionHistory,
     });
 
     expect(getConsumptionHistoryDataSpy).toBeCalledWith(consumptionHistory);
@@ -156,11 +156,9 @@ describe('ClientService', () => {
     expect(data).toEqual({
       valid: true,
       co2Economy: 462,
-      average: 550,
-      sum: 5500,
-    })
+    });
     expect(errors).toEqual([]);
-  })
+  });
 
   it('Should return errors if client is invalid', () => {
     const getConsumptionHistoryDataSpy = jest.spyOn(clientService, 'getConsumptionHistoryData');
@@ -172,7 +170,7 @@ describe('ClientService', () => {
       sum: 5500,
       average: 550,
       co2Economy: 462,
-    })
+    });
     validateConsumptionClassSpy.mockReturnValueOnce('Classe de consumo não aceita');
     validateFareModalitySpy.mockReturnValueOnce('Modalidade tarifária não aceita');
     validateConsumptionHistorySpy.mockReturnValueOnce(null);
@@ -183,7 +181,7 @@ describe('ClientService', () => {
       connectionType: connectionTypesEnum.monofasico,
       consumptionClass: consumptionClassesEnum.rural,
       fareModality: fareModalitiesEnum.verde,
-      consumptionHistory: consumptionHistory,
+      consumptionHistory,
     });
 
     expect(getConsumptionHistoryDataSpy).toBeCalledWith(consumptionHistory);
@@ -194,12 +192,10 @@ describe('ClientService', () => {
     expect(data).toEqual({
       valid: false,
       co2Economy: 462,
-      average: 550,
-      sum: 5500,
-    })
+    });
     expect(errors).toEqual([
       'Classe de consumo não aceita',
       'Modalidade tarifária não aceita',
     ]);
-  })
+  });
 });

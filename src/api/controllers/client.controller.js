@@ -3,7 +3,7 @@ const ClientService = require('../services/client.service');
 
 exports.validate = async (req, res, next) => {
   const {
-    connectionType: connectionType,
+    connectionType,
     classeDeConsumo: consumptionClass,
     modalidadeTarifaria: fareModality,
     historicoDeConsumo: consumptionHistory,
@@ -15,22 +15,22 @@ exports.validate = async (req, res, next) => {
     consumptionClass,
     fareModality,
     consumptionHistory,
-  })
+  });
 
   const {
     valid,
     co2Economy,
-  } = clientData
+  } = clientData;
 
   const responseBody = {
     elegivel: valid,
-  }
+  };
 
-  let responseStatus = valid ? httpStatus.OK : httpStatus.BAD_REQUEST;
+  const responseStatus = valid ? httpStatus.OK : httpStatus.BAD_REQUEST;
   if (valid) {
-    responseBody['economiaAnualDeCO2'] = co2Economy;
+    responseBody.economiaAnualDeCO2 = co2Economy;
   } else {
-    responseBody['erros'] = errors;
+    responseBody.erros = errors;
   }
 
   res.status(responseStatus).json(responseBody);

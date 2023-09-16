@@ -71,7 +71,7 @@ class ClientService {
     return [
       {
         valid: errors.length === 0,
-        ...consumptionHistoryData,
+        co2Economy: consumptionHistoryData.co2Economy,
       },
       errors,
     ];

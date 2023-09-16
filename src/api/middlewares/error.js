@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
+const { ValidationError } = require('express-validation');
 const APIError = require('../errors/api-error');
 const { env } = require('../../config/vars');
-const { ValidationError } = require('express-validation');
 
 const handler = (err, req, res, next) => {
   const response = {

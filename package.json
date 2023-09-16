@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./src/index.js",
+    "lint": "eslint ./src/ --ignore-path .gitignore",
     "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/eslint-parser": "^7.22.15",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -17,6 +19,7 @@
     "express-validation": "^4.1.0",
     "helmet": "^7.0.0",
     "http-status": "^1.7.0",
+    "joi": "^17.10.1",
     "morgan": "^1.10.0",
     "winston": "^3.10.0"
   },

@@ -9,7 +9,7 @@ router
   .route('/validate')
   .post(
     validate(validateClient),
-    controller.validate
+    controller.validate,
   );
 
 module.exports = router;
