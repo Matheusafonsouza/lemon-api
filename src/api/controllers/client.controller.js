@@ -17,10 +17,7 @@ exports.validate = async (req, res, next) => {
     consumptionHistory,
   });
 
-  const {
-    valid,
-    co2Economy,
-  } = clientData;
+  const { valid, co2Economy } = clientData;
 
   const responseBody = {
     elegivel: valid,

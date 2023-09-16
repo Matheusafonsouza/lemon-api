@@ -32,10 +32,18 @@ module.exports = {
   fareModalities,
   validateClient: {
     body: Joi.object({
-      numeroDoDocumento: Joi.string().pattern(/(^\d{11}$)|(^\d{14}$)/).required(),
-      tipoDeConexao: Joi.string().valid(...connectionTypes).required(),
-      classeDeConsumo: Joi.string().valid(...consumptionClasses).required(),
-      modalidadeTarifaria: Joi.string().valid(...fareModalities).required(),
+      numeroDoDocumento: Joi.string()
+        .pattern(/(^\d{11}$)|(^\d{14}$)/)
+        .required(),
+      tipoDeConexao: Joi.string()
+        .valid(...connectionTypes)
+        .required(),
+      classeDeConsumo: Joi.string()
+        .valid(...consumptionClasses)
+        .required(),
+      modalidadeTarifaria: Joi.string()
+        .valid(...fareModalities)
+        .required(),
       historicoDeConsumo: Joi.array().items(Joi.number()).required(),
     }),
   },

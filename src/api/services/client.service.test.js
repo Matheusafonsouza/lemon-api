@@ -1,9 +1,5 @@
 const ClientService = require('./client.service');
-const {
-  consumptionClassesEnum,
-  fareModalitiesEnum,
-  connectionTypesEnum,
-} = require('../schemas/client.schema');
+const { consumptionClassesEnum, fareModalitiesEnum, connectionTypesEnum } = require('../schemas/client.schema');
 
 describe('ClientService', () => {
   let clientService;
@@ -37,10 +33,7 @@ describe('ClientService', () => {
       consumptionClass: consumptionClassesEnum.poderPublico,
       expected: 'Classe de consumo não aceita',
     },
-  ])('Should validate $consumptionClass consumption class', ({
-    consumptionClass,
-    expected,
-  }) => {
+  ])('Should validate $consumptionClass consumption class', ({ consumptionClass, expected }) => {
     const result = clientService.validateConsumptionClass(consumptionClass);
     expect(result).toBe(expected);
   });
@@ -62,10 +55,7 @@ describe('ClientService', () => {
       fareModality: fareModalitiesEnum.azul,
       expected: 'Modalidade tarifária não aceita',
     },
-  ])('Should validate $fareModality fare modality', ({
-    fareModality,
-    expected,
-  }) => {
+  ])('Should validate $fareModality fare modality', ({ fareModality, expected }) => {
     const result = clientService.validateFareModality(fareModality);
     expect(result).toBe(expected);
   });
@@ -101,15 +91,8 @@ describe('ClientService', () => {
       connectionType: connectionTypesEnum.trifasico,
       expected: 'Consumo muito baixo para tipo de conexão',
     },
-  ])('Should validate $fareModality consumption history', ({
-    consumptionHistoryAverage,
-    connectionType,
-    expected,
-  }) => {
-    const result = clientService.validateConsumptionHistory(
-      consumptionHistoryAverage,
-      connectionType,
-    );
+  ])('Should validate $fareModality consumption history', ({ consumptionHistoryAverage, connectionType, expected }) => {
+    const result = clientService.validateConsumptionHistory(consumptionHistoryAverage, connectionType);
     expect(result).toBe(expected);
   });
 
@@ -193,9 +176,6 @@ describe('ClientService', () => {
       valid: false,
       co2Economy: 462,
     });
-    expect(errors).toEqual([
-      'Classe de consumo não aceita',
-      'Modalidade tarifária não aceita',
-    ]);
+    expect(errors).toEqual(['Classe de consumo não aceita', 'Modalidade tarifária não aceita']);
   });
 });

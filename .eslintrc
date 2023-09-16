@@ -10,14 +10,12 @@
   "env": {
     "node": true,
     "mocha": true,
-    "jest": true,
+    "jest": true
   },
   "parserOptions": {
     "ecmaVersion": 8,
     "parser": "@babel/eslint-parser",
-    "requireConfigFile": false,
+    "requireConfigFile": false
   },
-  "extends": [
-    "airbnb-base"
-  ]
+  "extends": ["airbnb-base", "prettier"]
 }

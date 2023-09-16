@@ -1,8 +1,4 @@
-const {
-  connectionTypesEnum,
-  consumptionClassesEnum,
-  fareModalitiesEnum,
-} = require('../schemas/client.schema');
+const { connectionTypesEnum, consumptionClassesEnum, fareModalitiesEnum } = require('../schemas/client.schema');
 
 const clientErrors = {
   INVALID_CONSUMPTION_CLASS: 'Classe de consumo não aceita',
@@ -12,21 +8,18 @@ const clientErrors = {
 
 class ClientService {
   validateConsumptionClass(consumptionClass) {
-    if (![
-      consumptionClassesEnum.residencial,
-      consumptionClassesEnum.industrial,
-      consumptionClassesEnum.comercial,
-    ].includes(consumptionClass)) {
+    if (
+      ![consumptionClassesEnum.residencial, consumptionClassesEnum.industrial, consumptionClassesEnum.comercial].includes(
+        consumptionClass,
+      )
+    ) {
       return clientErrors.INVALID_CONSUMPTION_CLASS;
     }
     return null;
   }
 
   validateFareModality(fareModality) {
-    if (![
-      fareModalitiesEnum.branco,
-      fareModalitiesEnum.convencional,
-    ].includes(fareModality)) {
+    if (![fareModalitiesEnum.branco, fareModalitiesEnum.convencional].includes(fareModality)) {
       return clientErrors.INVALID_FARE_MODALITY;
     }
     return null;
@@ -54,19 +47,16 @@ class ClientService {
     };
   }
 
-  validate({
-    connectionType,
-    consumptionClass,
-    fareModality,
-    consumptionHistory,
-  }) {
+  validate({ connectionType, consumptionClass, fareModality, consumptionHistory }) {
     const consumptionHistoryData = this.getConsumptionHistoryData(consumptionHistory);
 
     const errors = [
       this.validateConsumptionClass(consumptionClass),
       this.validateFareModality(fareModality),
       this.validateConsumptionHistory(consumptionHistoryData.average, connectionType),
-    ].map((error) => error).filter((error) => error);
+    ]
+      .map((error) => error)
+      .filter((error) => error);
 
     return [
       {

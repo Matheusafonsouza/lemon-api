@@ -5,11 +5,6 @@ const { validateClient } = require('../schemas/client.schema');
 
 const router = express.Router();
 
-router
-  .route('/validate')
-  .post(
-    validate(validateClient),
-    controller.validate,
-  );
+router.route('/validate').post(validate(validateClient), controller.validate);
 
 module.exports = router;
