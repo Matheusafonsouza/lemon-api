@@ -1,46 +1,45 @@
-const { 
+const {
   connectionTypesEnum,
   consumptionClassesEnum,
   fareModalitiesEnum,
-} = require('../schemas/client.schema')
-
+} = require('../schemas/client.schema');
 
 const clientErrors = {
-  'INVALID_CONSUMPTION_CLASS': 'Classe de consumo não aceita',
-  'INVALID_FARE_MODALITY': 'Modalidade tarifária não aceita',
-  'LOW_CONSUMPTION_FOR_CONNECTION_TYPE': 'Consumo muito baixo para tipo de conexão',
-}
+  INVALID_CONSUMPTION_CLASS: 'Classe de consumo não aceita',
+  INVALID_FARE_MODALITY: 'Modalidade tarifária não aceita',
+  LOW_CONSUMPTION_FOR_CONNECTION_TYPE: 'Consumo muito baixo para tipo de conexão',
+};
 
 class ClientService {
   validateConsumptionClass(consumptionClass) {
     if (![
-      consumptionClassesEnum['residencial'],
-      consumptionClassesEnum['industrial'],
-      consumptionClassesEnum['comercial'],
+      consumptionClassesEnum.residencial,
+      consumptionClassesEnum.industrial,
+      consumptionClassesEnum.comercial,
     ].includes(consumptionClass)) {
-      return clientErrors['INVALID_CONSUMPTION_CLASS'];
+      return clientErrors.INVALID_CONSUMPTION_CLASS;
     }
     return null;
   }
 
   validateFareModality(fareModality) {
     if (![
-      fareModalitiesEnum['branco'],
-      fareModalitiesEnum['convencional'],
+      fareModalitiesEnum.branco,
+      fareModalitiesEnum.convencional,
     ].includes(fareModality)) {
-      return clientErrors['INVALID_FARE_MODALITY'];
+      return clientErrors.INVALID_FARE_MODALITY;
     }
     return null;
   }
 
   validateConsumptionHistory(consumptionHistoryAverage, connectionType) {
     const connectionTypeSwitch = {
-      [connectionTypesEnum['monofasico']]: 400,
-      [connectionTypesEnum['bifasico']]: 500, 
-      [connectionTypesEnum['trifasico']]: 750,
-    }
+      [connectionTypesEnum.monofasico]: 400,
+      [connectionTypesEnum.bifasico]: 500,
+      [connectionTypesEnum.trifasico]: 750,
+    };
     if (consumptionHistoryAverage < connectionTypeSwitch[connectionType]) {
-      return clientErrors['LOW_CONSUMPTION_FOR_CONNECTION_TYPE'];
+      return clientErrors.LOW_CONSUMPTION_FOR_CONNECTION_TYPE;
     }
     return null;
   }
@@ -52,7 +51,7 @@ class ClientService {
       sum: historySum,
       average: historySum / validHistoryMonths.length,
       co2Economy: (84 * historySum) / 1000,
-    }
+    };
   }
 
   validate({
@@ -67,14 +66,14 @@ class ClientService {
       this.validateConsumptionClass(consumptionClass),
       this.validateFareModality(fareModality),
       this.validateConsumptionHistory(consumptionHistoryData.average, connectionType),
-    ].map(error => error).filter(error => error);
+    ].map((error) => error).filter((error) => error);
 
     return [
       {
         valid: errors.length === 0,
         ...consumptionHistoryData,
       },
-      errors
+      errors,
     ];
   }
 }
