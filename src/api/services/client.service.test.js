@@ -91,7 +91,7 @@ describe('ClientService', () => {
       connectionType: connectionTypesEnum.trifasico,
       expected: 'Consumo muito baixo para tipo de conexão',
     },
-  ])('Should validate $fareModality consumption history', ({ consumptionHistoryAverage, connectionType, expected }) => {
+  ])('Should validate $consumptionHistoryAverage for $connectionType', ({ consumptionHistoryAverage, connectionType, expected }) => {
     const result = clientService.validateConsumptionHistory(consumptionHistoryAverage, connectionType);
     expect(result).toBe(expected);
   });
