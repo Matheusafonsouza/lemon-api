@@ -1,6 +1,12 @@
 const httpStatus = require('http-status');
 const ClientService = require('../services/client.service');
 
+/**
+ * Check if the user is valid.
+ * @param {Object} req Request for the request.
+ * @param {Object} res Response for the request.
+ * @param {Object} next Next function for the request.
+ */
 exports.validate = async (req, res, next) => {
   const {
     connectionType,

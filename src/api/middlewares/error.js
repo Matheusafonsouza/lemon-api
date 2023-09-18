@@ -3,6 +3,13 @@ const { ValidationError } = require('express-validation');
 const APIError = require('../errors/api-error');
 const { env } = require('../../config/vars');
 
+/**
+ * Handles a given error.
+ * @param {Object} err Error instance.
+ * @param {Object} req Request instance.
+ * @param {Object} res Response instance.
+ * @param {Object} res Next instance.
+ */
 const handler = (err, req, res, next) => {
   const response = {
     code: err.status,
@@ -20,6 +27,13 @@ const handler = (err, req, res, next) => {
 };
 exports.handler = handler;
 
+/**
+ * Convert a given error to APIError instance.
+ * @param {Object} err Error instance.
+ * @param {Object} req Request instance.
+ * @param {Object} res Response instance.
+ * @param {Object} res Next instance.
+ */
 exports.converter = (err, req, res, next) => {
   let convertedError = err;
 
@@ -41,6 +55,12 @@ exports.converter = (err, req, res, next) => {
   return handler(convertedError, req, res);
 };
 
+/**
+ * Handles request with a not found error if needed.
+ * @param {Object} req Request instance.
+ * @param {Object} res Response instance.
+ * @param {Object} res Next instance.
+ */
 exports.notFound = (req, res, next) => {
   const err = new APIError({
     message: 'Not found',
