@@ -36,5 +36,5 @@ exports.validate = async (req, res, next) => {
     responseBody.erros = errors;
   }
 
-  res.status(responseStatus).json(responseBody);
+  return res.status(responseStatus).json(responseBody);
 };
