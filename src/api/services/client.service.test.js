@@ -134,7 +134,10 @@ describe('ClientService', () => {
     expect(getConsumptionHistoryDataSpy).toBeCalledWith(consumptionHistory);
     expect(validateConsumptionClassSpy).toBeCalledWith(consumptionClassesEnum.residencial);
     expect(validateFareModalitySpy).toBeCalledWith(fareModalitiesEnum.branca);
-    expect(validateConsumptionHistorySpy).toBeCalledWith(550, connectionTypesEnum.monofasico);
+    expect(validateConsumptionHistorySpy).toBeCalledWith({
+      connectionType: connectionTypesEnum.monofasico,
+      consumptionHistoryAverage: 550,
+    });
 
     expect(data).toEqual({
       valid: true,
@@ -170,7 +173,10 @@ describe('ClientService', () => {
     expect(getConsumptionHistoryDataSpy).toBeCalledWith(consumptionHistory);
     expect(validateConsumptionClassSpy).toBeCalledWith(consumptionClassesEnum.rural);
     expect(validateFareModalitySpy).toBeCalledWith(fareModalitiesEnum.verde);
-    expect(validateConsumptionHistorySpy).toBeCalledWith(550, connectionTypesEnum.monofasico);
+    expect(validateConsumptionHistorySpy).toBeCalledWith({
+      connectionType: connectionTypesEnum.monofasico,
+      consumptionHistoryAverage: 550,
+    });
 
     expect(data).toEqual({
       valid: false,

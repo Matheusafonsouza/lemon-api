@@ -9,7 +9,7 @@ const ClientService = require('../services/client.service');
  */
 exports.validate = async (req, res, next) => {
   const {
-    connectionType,
+    tipoDeConexao: connectionType,
     classeDeConsumo: consumptionClass,
     modalidadeTarifaria: fareModality,
     historicoDeConsumo: consumptionHistory,

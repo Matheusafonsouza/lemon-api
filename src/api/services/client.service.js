@@ -82,7 +82,10 @@ class ClientService {
     const errors = [
       this.validateConsumptionClass(consumptionClass),
       this.validateFareModality(fareModality),
-      this.validateConsumptionHistory(consumptionHistoryData.average, connectionType),
+      this.validateConsumptionHistory({
+        consumptionHistoryAverage: consumptionHistoryData.average,
+        connectionType
+      }),
     ]
       .map((error) => error)
       .filter((error) => error);
