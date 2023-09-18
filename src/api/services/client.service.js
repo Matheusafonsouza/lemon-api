@@ -7,6 +7,11 @@ const clientErrors = {
 };
 
 class ClientService {
+  /**
+   * Validate if the consumption class is valid.
+   * @param  {String} consumptionClass Consumption class to be validated.
+   * @return {String|null}  Error message if invalid, null if valid.
+   */
   validateConsumptionClass(consumptionClass) {
     if (
       ![consumptionClassesEnum.residencial, consumptionClassesEnum.industrial, consumptionClassesEnum.comercial].includes(
@@ -18,6 +23,11 @@ class ClientService {
     return null;
   }
 
+  /**
+   * Validate if the fare modality is valid.
+   * @param  {String} fareModality Fare modality to be validated.
+   * @return {String|null}  Error message if invalid, null if valid.
+   */
   validateFareModality(fareModality) {
     if (![fareModalitiesEnum.branco, fareModalitiesEnum.convencional].includes(fareModality)) {
       return clientErrors.INVALID_FARE_MODALITY;
@@ -25,7 +35,13 @@ class ClientService {
     return null;
   }
 
-  validateConsumptionHistory(consumptionHistoryAverage, connectionType) {
+  /**
+   * Validate if the consumption history and connection type are valid.
+   * @param  {String} consumptionHistoryAverage Consumption history average.
+   * @param  {String} connectionType Connection Type to be validated.
+   * @return {String|null}  Error message if invalid, null if valid.
+   */
+  validateConsumptionHistory({ consumptionHistoryAverage, connectionType }) {
     const connectionTypeSwitch = {
       [connectionTypesEnum.monofasico]: 400,
       [connectionTypesEnum.bifasico]: 500,
@@ -37,6 +53,11 @@ class ClientService {
     return null;
   }
 
+  /**
+   * Get the consumption history data (sum, average and CO2 economy).
+   * @param  {Array} consumptionHistory Consumption history to get data.
+   * @return {Object} Sum, average and CO2 Economy for a given history data.
+   */
   getConsumptionHistoryData(consumptionHistory) {
     const validHistoryMonths = consumptionHistory.slice(0, 12);
     const historySum = validHistoryMonths.reduce((a, b) => a + b, 0);
@@ -47,6 +68,14 @@ class ClientService {
     };
   }
 
+  /**
+   * Validates an user.
+   * @param  {String} connectionType Connection type to be validated.
+   * @param  {String} consumptionClass Consumption class to be validated.
+   * @param  {String} fareModality Fare Modality to be validated.
+   * @param  {Array} consumptionHistory Consumption history to be validated.
+   * @return {Array} Array where the first value have the valid result and CO2 Economy, the second have the errors.
+   */
   validate({ connectionType, consumptionClass, fareModality, consumptionHistory }) {
     const consumptionHistoryData = this.getConsumptionHistoryData(consumptionHistory);
 

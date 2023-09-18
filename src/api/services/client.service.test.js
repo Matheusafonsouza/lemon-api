@@ -92,7 +92,7 @@ describe('ClientService', () => {
       expected: 'Consumo muito baixo para tipo de conexão',
     },
   ])('Should validate $consumptionHistoryAverage for $connectionType', ({ consumptionHistoryAverage, connectionType, expected }) => {
-    const result = clientService.validateConsumptionHistory(consumptionHistoryAverage, connectionType);
+    const result = clientService.validateConsumptionHistory({ consumptionHistoryAverage, connectionType });
     expect(result).toBe(expected);
   });
 
