@@ -1,3 +1,4 @@
+const { cnpj, cpf } =  require('cpf-cnpj-validator');
 const httpStatus = require('http-status');
 const ClientService = require('../services/client.service');
 
@@ -9,11 +10,31 @@ const ClientService = require('../services/client.service');
  */
 exports.validate = async (req, res, next) => {
   const {
+    numeroDoDocumento: documentNumber,
     tipoDeConexao: connectionType,
     classeDeConsumo: consumptionClass,
+    subClasseDeConsumo: consumptionSubClass,
     modalidadeTarifaria: fareModality,
     historicoDeConsumo: consumptionHistory,
   } = req.body;
+
+  if (documentNumber.length === 11 && !cpf.isValid(documentNumber)) {
+    return res.status(httpStatus.BAD_REQUEST).json({
+      elegivel: false,
+      razoesDeInelegibilidade: [
+        "CPF inválido"
+      ]
+    })
+  }
+
+  if (documentNumber.length === 14 && !cnpj.isValid(documentNumber)) {
+    return res.status(httpStatus.BAD_REQUEST).json({
+      elegivel: false,
+      razoesDeInelegibilidade: [
+        "CNPJ inválido"
+      ]
+    })
+  }
 
   const clientService = new ClientService();
   const [clientData, errors] = clientService.validate({
@@ -21,6 +42,7 @@ exports.validate = async (req, res, next) => {
     consumptionClass,
     fareModality,
     consumptionHistory,
+    consumptionSubClass
   });
 
   const { valid, co2Economy } = clientData;
@@ -33,7 +55,7 @@ exports.validate = async (req, res, next) => {
   if (valid) {
     responseBody.economiaAnualDeCO2 = co2Economy;
   } else {
-    responseBody.erros = errors;
+    responseBody.razoesDeInelegibilidade = errors;
   }
 
   return res.status(responseStatus).json(responseBody);

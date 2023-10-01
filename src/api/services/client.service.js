@@ -1,9 +1,16 @@
-const { connectionTypesEnum, consumptionClassesEnum, fareModalitiesEnum } = require('../schemas/client.schema');
+const {
+  consumptionClassesEnum,
+  fareModalitiesEnum,
+  connectionTypesValuesEnum,
+  co2Fare,
+  consumptionSubClassesSwitch
+} = require('../schemas/client.schema');
 
 const clientErrors = {
   INVALID_CONSUMPTION_CLASS: 'Classe de consumo não aceita',
   INVALID_FARE_MODALITY: 'Modalidade tarifária não aceita',
   LOW_CONSUMPTION_FOR_CONNECTION_TYPE: 'Consumo muito baixo para tipo de conexão',
+  INVALID_SUBCLASS: 'Subclasse invalida para classe de consumo',
 };
 
 class ClientService {
@@ -42,13 +49,30 @@ class ClientService {
    * @return {String|null}  Error message if invalid, null if valid.
    */
   validateConsumptionHistory({ consumptionHistoryAverage, connectionType }) {
-    const connectionTypeSwitch = {
-      [connectionTypesEnum.monofasico]: 400,
-      [connectionTypesEnum.bifasico]: 500,
-      [connectionTypesEnum.trifasico]: 750,
-    };
-    if (consumptionHistoryAverage < connectionTypeSwitch[connectionType]) {
+    if (consumptionHistoryAverage < connectionTypesValuesEnum[connectionType]) {
       return clientErrors.LOW_CONSUMPTION_FOR_CONNECTION_TYPE;
+    }
+    return null;
+  }
+
+  /**
+   * Validate if the consumption subclass is valid.
+   * @param  {String} consumptionClass Consumption class to be validated.
+   * @param  {String} consumptionSubClass Consumption subclass to be validated.
+   * @return {String|null}  Error message if invalid, null if valid.
+   */
+  validateConsumptionSubClass({ consumptionClass, consumptionSubClass }) {
+    const {
+      elegiveis,
+      naoElegiveis
+    } = consumptionSubClassesSwitch[consumptionClass]
+    if (
+      !elegiveis ||
+      !naoElegiveis ||
+      naoElegiveis.includes(consumptionSubClass) ||
+      !elegiveis.includes(consumptionSubClass)
+    ) {
+      return clientErrors.INVALID_SUBCLASS;
     }
     return null;
   }
@@ -61,10 +85,11 @@ class ClientService {
   getConsumptionHistoryData(consumptionHistory) {
     const validHistoryMonths = consumptionHistory.slice(0, 12);
     const historySum = validHistoryMonths.reduce((a, b) => a + b, 0);
+    const average = historySum / validHistoryMonths.length;
     return {
       sum: historySum,
-      average: historySum / validHistoryMonths.length,
-      co2Economy: (84 * historySum) / 1000,
+      average,
+      co2Economy: (co2Fare * (average * 12)) / 1000,
     };
   }
 
@@ -76,7 +101,13 @@ class ClientService {
    * @param  {Array} consumptionHistory Consumption history to be validated.
    * @return {Array} Array where the first value have the valid result and CO2 Economy, the second have the errors.
    */
-  validate({ connectionType, consumptionClass, fareModality, consumptionHistory }) {
+  validate({
+    connectionType,
+    consumptionClass,
+    fareModality,
+    consumptionHistory,
+    consumptionSubClass
+  }) {
     const consumptionHistoryData = this.getConsumptionHistoryData(consumptionHistory);
 
     const errors = [
@@ -86,6 +117,10 @@ class ClientService {
         consumptionHistoryAverage: consumptionHistoryData.average,
         connectionType
       }),
+      this.validateConsumptionSubClass({
+        consumptionClass,
+        consumptionSubClass
+      })
     ]
       .map((error) => error)
       .filter((error) => error);

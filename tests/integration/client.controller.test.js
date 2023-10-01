@@ -5,9 +5,10 @@ describe('ClientController', () => {
   it.each([
     {
       payload: {
-        "numeroDoDocumento": "14041737706",
+        "numeroDoDocumento": "11620796000100",
         "tipoDeConexao": "bifasico",
         "classeDeConsumo": "comercial",
+        "subClasseDeConsumo": "comercial",
         "modalidadeTarifaria": "convencional",
         "historicoDeConsumo": [
           3878,
@@ -32,9 +33,10 @@ describe('ClientController', () => {
     },
     {
       payload: {
-        "numeroDoDocumento": "14041737706",
+        "numeroDoDocumento": "11620796000100",
         "tipoDeConexao": "bifasico",
         "classeDeConsumo": "rural",
+        "subClasseDeConsumo": "agropecuariaRural",
         "modalidadeTarifaria": "verde",
         "historicoDeConsumo": [
           100
@@ -43,18 +45,20 @@ describe('ClientController', () => {
       status: 400,
       response: {
         "elegivel": false,
-        "erros": [
+        "razoesDeInelegibilidade": [
           'Classe de consumo não aceita',
           'Modalidade tarifária não aceita',
-          'Consumo muito baixo para tipo de conexão'
+          'Consumo muito baixo para tipo de conexão',
+          'Subclasse invalida para classe de consumo'
         ]
       },
     },
     {
       payload: {
-        "numeroDoDocumento": "14041737706",
+        "numeroDoDocumento": "11620796000100",
         "tipoDeConexao": "bifasico",
         "classeDeConsumo": "rural",
+        "subClasseDeConsumo": "agropecuariaRural",
         "modalidadeTarifaria": "convencional",
         "historicoDeConsumo": [
           3878,
@@ -74,16 +78,18 @@ describe('ClientController', () => {
       status: 400,
       response: {
         "elegivel": false,
-        "erros": [
+        "razoesDeInelegibilidade": [
           'Classe de consumo não aceita',
+          'Subclasse invalida para classe de consumo'
         ]
       },
     },
     {
       payload: {
-        "numeroDoDocumento": "14041737706",
+        "numeroDoDocumento": "11620796000100",
         "tipoDeConexao": "bifasico",
         "classeDeConsumo": "comercial",
+        "subClasseDeConsumo": "comercial",
         "modalidadeTarifaria": "verde",
         "historicoDeConsumo": [
           3878,
@@ -103,46 +109,66 @@ describe('ClientController', () => {
       status: 400,
       response: {
         "elegivel": false,
-        "erros": [
+        "razoesDeInelegibilidade": [
           'Modalidade tarifária não aceita',
         ]
       },
     },
     {
       payload: {
-        "numeroDoDocumento": "14041737706",
+        "numeroDoDocumento": "11620796000100",
         "tipoDeConexao": "bifasico",
         "classeDeConsumo": "comercial",
+        "subClasseDeConsumo": "comercial",
         "modalidadeTarifaria": "convencional",
         "historicoDeConsumo": [100]
       },
       status: 400,
       response: {
         "elegivel": false,
-        "erros": [
+        "razoesDeInelegibilidade": [
           'Consumo muito baixo para tipo de conexão'
         ]
       },
     },
-  ])('Should return errors if user not valid', async () => {
-    await request(app).post('/clients/validate')
-      .send({
-        "numeroDoDocumento": "14041737706",
+    {
+      payload: {
+        "numeroDoDocumento": "11620796000100",
         "tipoDeConexao": "bifasico",
-        "classeDeConsumo": "rural",
-        "modalidadeTarifaria": "verde",
+        "classeDeConsumo": "comercial",
+        "subClasseDeConsumo": "templosReligiosos",
+        "modalidadeTarifaria": "convencional",
         "historicoDeConsumo": [
-          100
+          3878,
+          9760,
+          5976,
+          2797,
+          2481,
+          5731,
+          7538,
+          4392,
+          7859,
+          4160,
+          6941,
+          4597
         ]
-      })
-      .expect(400)
-      .expect({
+      },
+      status: 400,
+      response: {
         "elegivel": false,
-        "erros": [
-          'Classe de consumo não aceita',
-          'Modalidade tarifária não aceita',
-          'Consumo muito baixo para tipo de conexão'
-        ]
-      })
+        "razoesDeInelegibilidade": [
+          "Subclasse invalida para classe de consumo"
+        ],
+      },
+    },
+  ])('Should validate client requests', async ({
+    payload,
+    status,
+    response
+  }) => {
+    await request(app).post('/clients/validate')
+      .send(payload)
+      .expect(status)
+      .expect(response)
   });
 });
